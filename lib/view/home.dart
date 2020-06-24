@@ -10,7 +10,7 @@ class Home extends StatefulWidget {
 }
 
 class _homeState extends State<Home> {
-  Channel _channel;
+  ChannelModel _channel;
   bool _isLoading = false;
 
   @override
@@ -20,7 +20,7 @@ class _homeState extends State<Home> {
   }
 
   _initChannel() async {
-    Channel channel = await APIService.instance
+    ChannelModel channel = await VideoController.instance
         .fetchChannel(channelId: 'UC6Dy0rQ6zDnQuHQ1EeErGUA');
     setState(() {
       _channel = channel;
@@ -81,7 +81,7 @@ class _homeState extends State<Home> {
     );
   }
 
-  _buildVideo(Video video) {
+  _buildVideo(VideoModel video) {
     return GestureDetector(
       onTap: () => Navigator.push(
         context,
@@ -127,9 +127,9 @@ class _homeState extends State<Home> {
 
   _loadMoreVideos() async {
     _isLoading = true;
-    List<Video> moreVideos = await APIService.instance
+    List<VideoModel> moreVideos = await VideoController.instance
         .fetchVideosFromPlaylist(playlistId: _channel.uploadPlaylistId);
-    List<Video> allVideos = _channel.videos..addAll(moreVideos);
+    List<VideoModel> allVideos = _channel.videos..addAll(moreVideos);
     setState(() {
       _channel.videos = allVideos;
     });
@@ -141,6 +141,7 @@ class _homeState extends State<Home> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Rest Video Assignment'),
+        backgroundColor: Colors.deepPurple,
         centerTitle: true,
       ),
       body: _channel != null
@@ -160,78 +161,14 @@ class _homeState extends State<Home> {
             if (index == 0) {
               return _buildProfileInfo();
             }
-            Video video = _channel.videos[index - 1];
+            VideoModel video = _channel.videos[index - 1];
             return _buildVideo(video);
           },
         ),
       )
           : Center(
-        child: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(
-            Theme.of(context).primaryColor, // Red
-          ),
-        ),
+        child: CircularProgressIndicator(),
       ),
     );
   }
 }
-//  VideoController videoController;
-//
-//  @override
-//  void initState() {
-//    super.initState();
-//    videoController.fetchVideosData();
-//    print('hello');
-//  }
-//  @override
-//  Widget build(BuildContext context) {
-//    return  MaterialApp(
-//      home:  Scaffold(
-//          appBar:  AppBar(
-//            title: Text('Youtube API'),
-//          ),
-//          body:  Container(
-//            child: ListView.builder(
-//                itemCount: videoController.videos.length,
-//                itemBuilder: (_, int index) => listItem(index)
-//            ),
-//          )
-//      ),
-//    );
-//  }
-//  Widget listItem(index){
-//    return  Card(
-//      child:  Container(
-//        margin: EdgeInsets.symmetric(vertical: 7.0),
-//        padding: EdgeInsets.all(12.0),
-//        child: Row(
-//          children: <Widget>[
-//             Image.network(videoController.videos[index].csn),
-//             Padding(padding: EdgeInsets.only(right: 20.0)),
-//             Expanded(child:  Column(
-//                mainAxisAlignment: MainAxisAlignment.start,
-//                crossAxisAlignment: CrossAxisAlignment.start,
-//                children: <Widget>[
-//                   Text(
-//                     videoController.videos[index].page,
-//                    softWrap: true,
-//                    style: TextStyle(fontSize:18.0),
-//                  ),
-//                   Padding(padding: EdgeInsets.only(bottom: 1.5)),
-//                   Text(
-//                     videoController.videos[index].csn,
-//                    softWrap: true,
-//                  ),
-//                   Padding(padding: EdgeInsets.only(bottom: 3.0)),
-//                   Text(
-//                     videoController.videos[index].rootVe.toString(),
-//                    softWrap: true,
-//                  ),
-//                ]
-//            ))
-//          ],
-//        ),
-//      ),
-//    );
-//  }
-//}

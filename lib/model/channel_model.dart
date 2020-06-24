@@ -1,6 +1,6 @@
 import 'package:rest_assignment/model/video_model.dart';
 
-class Channel {
+class ChannelModel {
 
   final String id;
   final String title;
@@ -8,9 +8,9 @@ class Channel {
   final String subscriberCount;
   final String videoCount;
   final String uploadPlaylistId;
-  List<Video> videos;
+  List<VideoModel> videos;
 
-  Channel({
+  ChannelModel({
     this.id,
     this.title,
     this.profilePictureUrl,
@@ -20,8 +20,8 @@ class Channel {
     this.videos,
   });
 
-  factory Channel.fromMap(Map<String, dynamic> map) {
-    return Channel(
+  factory ChannelModel.fromMap(Map<String, dynamic> map) {
+    return ChannelModel(
       id: map['id'],
       title: map['snippet']['title'],
       profilePictureUrl: map['snippet']['thumbnails']['default']['url'],

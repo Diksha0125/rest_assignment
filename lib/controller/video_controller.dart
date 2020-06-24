@@ -4,25 +4,21 @@ import 'package:http/http.dart' as http;
 import 'package:rest_assignment/model/channel_model.dart';
 import 'package:rest_assignment/model/video_model.dart';
 
-class APIService {
-  APIService._instantiate();
+class VideoController {
+  VideoController._instantiate();
 
-  static final APIService instance = APIService._instantiate();
+  static final VideoController instance = VideoController._instantiate();
 
   final String _baseUrl = 'www.googleapis.com';
   String _nextPageToken = '';
 
-  Future<Channel> fetchChannel({String channelId}) async {
+  Future<ChannelModel> fetchChannel({String channelId}) async {
     Map<String, String> parameters = {
       'part': 'snippet, contentDetails, statistics',
       'id': channelId,
       'key': "AIzaSyDOaaHQpUGLqZNef_kyhARPmxBYYYwb_3s",
     };
-    Uri uri = Uri.https(
-      _baseUrl,
-      '/youtube/v3/channels',
-      parameters,
-    );
+    Uri uri = Uri.https(_baseUrl, '/youtube/v3/channels', parameters);
     Map<String, String> headers = {
       HttpHeaders.contentTypeHeader: 'application/json',
     };
@@ -30,9 +26,7 @@ class APIService {
     var response = await http.get(uri, headers: headers);
     if (response.statusCode == 200) {
       Map<String, dynamic> data = json.decode(response.body)['items'][0];
-      Channel channel = Channel.fromMap(data);
-
-      // Fetch first batch of videos from uploads playlist
+      ChannelModel channel = ChannelModel.fromMap(data);
       channel.videos = await fetchVideosFromPlaylist(
         playlistId: channel.uploadPlaylistId,
       );
@@ -42,7 +36,7 @@ class APIService {
     }
   }
 
-  Future<List<Video>> fetchVideosFromPlaylist({String playlistId}) async {
+  Future<List<VideoModel>> fetchVideosFromPlaylist({String playlistId}) async {
     Map<String, String> parameters = {
       'part': 'snippet',
       'playlistId': playlistId,
@@ -50,11 +44,7 @@ class APIService {
       'pageToken': _nextPageToken,
       'key': "AIzaSyDOaaHQpUGLqZNef_kyhARPmxBYYYwb_3s",
     };
-    Uri uri = Uri.https(
-      _baseUrl,
-      '/youtube/v3/playlistItems',
-      parameters,
-    );
+    Uri uri = Uri.https(_baseUrl, '/youtube/v3/playlistItems', parameters);
     Map<String, String> headers = {
       HttpHeaders.contentTypeHeader: 'application/json',
     };
@@ -66,16 +56,11 @@ class APIService {
       _nextPageToken = data['nextPageToken'] ?? '';
       List<dynamic> videosJson = data['items'];
 
-      List<Video> videos = [];
-      videosJson.forEach(
-            (json) => videos.add(
-          Video.fromMap(json['snippet']),
-        ),
-      );
+      List<VideoModel> videos = [];
+      videosJson.forEach((json) => videos.add(VideoModel.fromMap(json['snippet'])));
       return videos;
     } else {
       throw json.decode(response.body)['error']['message'];
     }
   }
-
 }
