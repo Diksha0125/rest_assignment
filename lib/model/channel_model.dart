@@ -1,7 +1,6 @@
 import 'package:rest_assignment/model/video_model.dart';
 
 class ChannelModel {
-
   final String id;
   final String title;
   final String profilePictureUrl;
@@ -30,5 +29,4 @@ class ChannelModel {
       uploadPlaylistId: map['contentDetails']['relatedPlaylists']['uploads'],
     );
   }
-
 }

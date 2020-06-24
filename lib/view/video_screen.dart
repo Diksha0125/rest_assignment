@@ -35,9 +35,7 @@ class _VideoScreenState extends State<VideoScreen> {
         child: YoutubePlayer(
           controller: _controller,
           showVideoProgressIndicator: true,
-          onReady: () {
-            print('Player is ready.');
-          },
+          onReady: () {},
         ),
       ),
     );

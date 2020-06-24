@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:http/http.dart' as http;
 import 'package:rest_assignment/model/channel_model.dart';
 import 'package:rest_assignment/model/video_model.dart';
@@ -57,7 +58,8 @@ class VideoController {
       List<dynamic> videosJson = data['items'];
 
       List<VideoModel> videos = [];
-      videosJson.forEach((json) => videos.add(VideoModel.fromMap(json['snippet'])));
+      videosJson
+          .forEach((json) => videos.add(VideoModel.fromMap(json['snippet'])));
       return videos;
     } else {
       throw json.decode(response.body)['error']['message'];
